@@ -1,0 +1,213 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="site-title">Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <script src="../Data/data.js"></script>
+    <div class="time-left d-flex align-items-center justify-content-sm-between bg-white shadow-sm p-3">
+        <div>
+            <h3 id="exam-name">Exam</h3>
+        </div>
+        <div>
+            <h3 id="user-name">User</h3>
+        </div>
+    </div>
+    <div id="central">
+        <div id="exam">
+            <div class="time-left d-flex align-items-center justify-content-sm-between bg-white shadow-sm p-3">
+                <div class="time-remain"><img src="https://www.mockers.in/frontend/img/red-alarm.svg" alt=""><span
+                        class="ms-2"><span class="timeLeftSpanId">165:07 MIN</span></span></div>
+                <div class="submit" id="showSubmitPopupId"><a
+                        onclick='document.querySelector(`[class="modal-dialog modal-dialog-centered"]`).style.display="block"'
+                        class="btn btn-success btn-pad" data-bs-toggle="modal">Submit</a></div>
+            </div>
+            <div id="test"> </div>
+        </div>
+        <div id="navigator">
+            <div id="ligand">
+                <div class="alert-list d-flex align-items-center flex-wrap">
+                    <p><span class="round-area round-dark"></span>Not Visited</p>
+                    <p><span class="round-area round-yellow"></span>Un-answered</p>
+                    <p><span class="round-area round-blue"></span>Answered</p>
+                    <p><span class="round-area round-light-blue"></span>Review</p>
+                    <p><span class="round-area round-light-sky"></span>Review with Answer</p>
+                </div>
+            </div>
+            <select name="Subject" id="sub-select" onchange="changesubj(this.value)">
+                <option value=0>Physics</option>
+                <option value=1>Chemistry</option>
+                <option value=2>Biology</option>
+            </select>
+            <ul id="navigation-list"></ul>
+        </div>
+    </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center justify-content-center">
+                <div class="mo-header-logo text-center px-5 pb-3">
+                    <div class="h5 text-white mtsmh">Are you sure want to submit test</div>
+                    <p class="mb-0 text-white mtsmsh">After submitting test, you won’t be able to re-attempt</p>
+                </div>
+                <button type="button" class="btn-close"
+                    onclick='document.querySelector(`[class="modal-dialog modal-dialog-centered"]`).style.display="none"'
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex align-items-center">
+                        <img src="https://www.mockers.in/frontend/img/red-alarm.svg" alt="" class="me-2"> Time Left:
+                        <span class="ms-auto list-span timeLeftSpanId">149:53 MIN</span>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <img src="https://www.mockers.in/frontend/img/checked.svg" alt="" class="me-2"> Attempted:
+                        <span class="ms-auto list-span" id="totalAttemptedQuestionCountId">2</span>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <img src="https://www.mockers.in/frontend/img/unattempt.svg" alt="" class="me-2"> Unattempt:
+                        <span class="ms-auto list-span" id="totalUnAttemptedQuestionCountId">178</span>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <img src="https://www.mockers.in/frontend/img/marked.svg" alt="" class="me-2"> Marked for
+                        Review:
+                        <span class="ms-auto list-span" id="totalReviewQuestionCountId">0</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-light btn-pad"
+                    onclick='document.querySelector(`[class="modal-dialog modal-dialog-centered"]`).style.display="none"'>Cancel</button>
+                <button type="button" onclick="submit()" class="btn btn-primary btn-pad"
+                    id="submitToServerBtn">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div class="position-fixed bg-white sub-area py-2 bottomBtnsDiv top-shadow">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-8 col-md-8 d-flex align-items-center justify-content-sm-between"
+                    id="mocktestFooterBtnsDiv">
+                    <a onclick="previous()" class="btn-prev btn-rouned btn-pad" id="questionPrevious"><img
+                            src="https://www.mockers.in/frontend/img/test-arrow-left.svg" alt=""></a>
+                    <a onclick="markreview(current_q_id)" class="btn round-light-blue btn-pad ms-auto text-white"
+                        id="markForReviewBtn">Mark Review</a>
+                    <a onclick="clearQuestionOptions(current_q_id)"
+                        class="btn ms-2 btn-pad me-auto text-white round-light-blue" id="clearSelectionBtn">Clear
+                        Selection</a>
+                    <a onclick="next()" class="btn-next btn-rouned btn-pad" id="questionNext"><img
+                            src="https://www.mockers.in/frontend/img/test-arrow-right.svg" alt=""></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="result" class="modal-dialog">
+        <div class="modal-content">
+            <tr>
+                <td>
+                    <table>
+                        <thead colspan=3>Physics</thead>
+                        <thead>
+                            <th>Question</th>
+                            <th>Correct answer</th>
+                            <th>Your answer</th>
+                            <th>state</th>
+                        </thead>
+                        <tbody id="phy-result"></tbody>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <thead colspan=3>Chemistry</thead>
+                        <thead>
+                            <th>Question</th>
+                            <th>Correct answer</th>
+                            <th>Your answer</th>
+                            <th>state</th>
+                        </thead>
+                        <tbody id="chem-result"></tbody>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <thead colspan=3>Biology</thead>
+                        <thead>
+                            <th>Question</th>
+                            <th>Correct answer</th>
+                            <th>Your answer</th>
+                            <th>state</th>
+                        </thead>
+                        <tbody id="bio-result"></tbody>
+                    </table>
+                </td>
+                <h1 id="totalresult"></h1>
+        </div>
+    </div>
+    <div id="result-question" class="modal-dialog">
+        <div class="modal-content">
+            <p style="display: flex;justify-content: space-around;"><span>correct:<span
+                        id="correctanswertobeshown"></span></span><span> Your answer:<span
+                        id="useranswertobeshown"></span></span></p><button
+                onclick="document.getElementById('result-question').style.display='none'">close</button>
+            <hr>
+            <ul class="ques-list ps-0 mt-3" id="Q_is_showen_here"></ul>
+        </div>
+    </div>
+    <script>
+        var user_responce; var totaltime; var examid; var user;
+        // Function to get the exam object based on URL's category and examid
+        function getExamByCategoryAndId() {
+            // Create a URL object from the current window location
+            const url = new URL(window.location.href);
+
+            // Extract the 'category' and 'examid' parameters from the URL
+            const category = url.searchParams.get('category');
+            const examidParam = url.searchParams.get('examid');
+            user = url.searchParams.get('user');
+            if (!user) {
+                user = prompt('Please enter your id\n Trespassing is not allowed');
+                if (user !== 'Mannu' && user !== 'Dhwani') {
+                    alert('no trespassing allowed, u are not in the list.\n Please contact the admin to add you.');
+                    document.querySelectorAll('[lang="en"]')[0].remove();
+                    return
+                }
+            }
+            document.getElementById('user-name').textContent = user;
+
+            // Convert the 'examid' parameter to a number
+            const examid = Number(examidParam);
+
+            // Check if the category exists in the Exam object
+            if (Exam.hasOwnProperty(category)) {
+                // Get the array of exams for the specified category
+                const exams = Exam[category];
+
+                // Find the exam object with the matching 'examid'
+                const exam = exams.find(e => e.examid === examid);
+
+                // Return the found exam object or null if not found
+                return exam || null;
+            } else {
+                // Category does not exist
+                console.error(`Category '${category}' not found.`);
+                return null;
+            }
+        }
+
+        function setup(E) {
+            document.getElementById('test').innerHTML = E.questions;
+            user_responce = JSON.parse(E.json);
+            document.getElementById('exam-name').innerHTML = E.name;
+            totaltime = E.time;
+            examid = E.examid;
+        }
+        setup(getExamByCategoryAndId())
+    </script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
